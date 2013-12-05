@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlackJack
 {
@@ -16,7 +12,12 @@ namespace BlackJack
             
             do
             {
-                if (game.NeedToShuffle()) game.Shuffle();
+                Console.Clear();
+                if (game.NeedToShuffle())
+                {
+                    game.Shuffle();
+                    Console.WriteLine("Reshuffling!");
+                }
                 game.Deal();
 
                 Console.WriteLine();
@@ -25,7 +26,7 @@ namespace BlackJack
 
             } while (playagain == "y");
 
-            Console.WriteLine("Done! Game over!");
+            Console.WriteLine("Game over!");
             Console.ReadLine();
         }
     }

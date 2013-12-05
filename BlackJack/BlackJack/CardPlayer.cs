@@ -33,5 +33,32 @@ namespace BlackJack
                 return score;
             }
         }
+
+        public bool DoneTakingCards { get; set; }
+
+        public void DiscardHand()
+        {
+            this.Hand.Clear();
+            this.DoneTakingCards = false;
+        }
+
+        public bool HasBlackJack
+        {
+            get
+            {
+                if (this.Hand.Count != 2) return false;
+                
+                var card1 = this.Hand[0];
+                var card2 = this.Hand[1];
+
+                return (card1.CardValue == 1 && card2.CardValue >= 10) ||
+                       (card2.CardValue == 1 && card1.CardValue >= 10);
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Join(", ", this.Hand.Select(q => q.ToString()));
+        }
     }
 }

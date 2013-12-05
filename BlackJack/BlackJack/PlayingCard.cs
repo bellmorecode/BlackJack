@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BlackJack
 {
     public sealed class PlayingCard
     {
-        static PlayingCard() {
-            CardNames[0] = "Ace";
+
+        static PlayingCard() 
+        {
+            CardNames[0] = "A";
             CardNames[1] = "2";
             CardNames[2] = "3";
             CardNames[3] = "4";
@@ -18,23 +17,34 @@ namespace BlackJack
             CardNames[7] = "8";
             CardNames[8] = "9";
             CardNames[9] = "10";
-            CardNames[10] = "Jack";
-            CardNames[11] = "Queen";
-            CardNames[12] = "King";
-            
+            CardNames[10] = "J";
+            CardNames[11] = "Q";
+            CardNames[12] = "K";
         }
 
-        internal PlayingCard()
-        {
-
-        }
+        internal PlayingCard() { }
 
         private static string[] CardNames = new string[13];
 
-        static string GetCardName(int cardValue) {
+        private static string GetCardName(int cardValue) 
+        {
             if (cardValue < 1 || cardValue > 13) throw new ArgumentOutOfRangeException("cardValue", "Should be between 1 and 13 inclusively");
             return CardNames[cardValue - 1];
         }
+
+        private static string GetSuitSymbol(Suits s)
+        {
+            switch (s)
+            {
+                case Suits.Spade: return "♠";
+                case Suits.Heart: return "♥";
+                case Suits.Club: return "♣";
+                case Suits.Diamond: return "♦";
+                default:
+                    return "unknown";
+            }
+        }
+
 
         public enum Suits { Spade, Heart, Club, Diamond }
 
@@ -42,11 +52,11 @@ namespace BlackJack
 
         public Suits Suit { get; set; }
 
+        
+
         public override string ToString()
         {
-            return string.Format("{0} of {1}", GetCardName(this.CardValue), Suit);
+            return string.Format("{0}{1}", GetCardName(this.CardValue), GetSuitSymbol(Suit));
         }
     }
-
-
 }
