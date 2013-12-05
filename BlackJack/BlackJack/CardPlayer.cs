@@ -19,16 +19,21 @@ namespace BlackJack
 
         public int CurrentScore
         {
-            get {
+            get
+            {
+                var aceCount = Hand.Count(q => q.CardValue == 1);
+
                 // score adjustments
                 var score = Hand.Select(q => q.CardValue)
                                 .Select(q => q > 10 ? 10 : q)
                                 .Select(q => q == 1 ? 11 : q).Sum();
 
-                // TODO: Come back to this. 
-                //if (score > 21 && Hand.Any()) {
-                //
-                //}
+                // Allow for Aces to be discounted
+                while (score > 21 && aceCount > 0)
+                {
+                    score -= 10;
+                    aceCount--;
+                }
 
                 return score;
             }
