@@ -56,8 +56,12 @@ namespace BlackJack
                 var card1 = this.Hand[0];
                 var card2 = this.Hand[1];
 
-                return (card1.CardValue == 1 && card2.CardValue >= 10) ||
+                var isBJ = (card1.CardValue == 1 && card2.CardValue >= 10) ||
                        (card2.CardValue == 1 && card1.CardValue >= 10);
+
+                if (isBJ) this.DoneTakingCards = true;
+
+                return isBJ;
             }
         }
 

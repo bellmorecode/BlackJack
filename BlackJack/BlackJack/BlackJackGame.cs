@@ -59,13 +59,23 @@ namespace BlackJack
 
         private void PrintGameState()
         {
-            Console.WriteLine("Dealer");
+            Console.Clear();
+            var go = IsGameOver();
+
+            CardDealer d = this.Dealer as CardDealer;
+            if (d.IsHandOpen)
+            {
+                Console.WriteLine("Dealer - Score: {0}", d.CurrentScore);
+            }
+            else
+            {
+                Console.WriteLine("Dealer");
+            }
+
+            
             if (this.Dealer.HasBlackJack) Console.WriteLine("BLACKJACK!");
 
-            if (GameIsOver) this.Dealer.DoneTakingCards = true;
             Console.WriteLine("{0}", this.Dealer);
-            
-
             Console.WriteLine();
 
             var playersArray = this.Players.ToArray();
@@ -78,19 +88,16 @@ namespace BlackJack
                 Console.WriteLine();
             }
 
-            if (GameIsOver)
+            if (go)
             {
-                string msg = string.Empty;
-                GameIsOver = AssessGameStatus(out msg);
-                Console.WriteLine(msg);
+                Console.WriteLine(GameResultMessage);
             }
         }
 
-        public bool GameIsOver {get; set; }
+        public string GameResultMessage { get; set; }
 
         public void Deal()
-        {
-            this.GameIsOver = false;
+        {            
             // deal two cards
             for (var round = 1; round <= 2; round++)
             {
@@ -103,55 +110,58 @@ namespace BlackJack
 
             PrintGameState();
 
-            string gameOverMessage = string.Empty;
-            
-
-            do
+            if (!IsGameOver())
             {
-                GameIsOver = AssessGameStatus(out gameOverMessage);
-
-                if (GameIsOver)
+                foreach (var player in this.Players)
                 {
-                    Console.WriteLine(gameOverMessage);
+                    do
+                    {
+                        Console.WriteLine("Your move... ");
+                        Console.Write("(H)it  (S)tay ");
+                        var choice = Console.ReadLine();
+                        if (choice.ToUpper() == "H")
+                        {
+                            player.Hand.Add(this.Cards.Dequeue());
+                            if (player.CurrentScore > 21) player.DoneTakingCards = true;
+                        }
+                        else
+                        {
+                            player.DoneTakingCards = true;
+                        }
+
+                        PrintGameState();
+
+                    } while (!player.DoneTakingCards);
+                }
+
+                var go = this.IsGameOver();
+
+                if (!go)
+                {
+                    if (this.Dealer.MustTakeCards())
+                    {
+                        while (this.Dealer.MustTakeCards())
+                        {
+                            this.Dealer.Hand.Add(this.Cards.Dequeue());
+                            if (this.Dealer.CurrentScore >= 21) this.Dealer.DoneTakingCards = true;
+
+                            PrintGameState();
+                        }
+                        if (IsGameOver()) PrintGameState();
+                    }
+                    else
+                    {
+                        PrintGameState();
+                        // just print and end
+                    }
+                    
                 }
                 else
                 {
-                    foreach (var player in this.Players)
-                    {
-                        
-                        do
-                        {
-                            Console.WriteLine("Make a Move!");
-                            Console.Write("(H)it  (S)tay ");
-                            var choice = Console.ReadLine();
-                            if (choice.ToUpper() == "H")
-                            {
-                                player.Hand.Add(this.Cards.Dequeue());
-                            }
-                            else
-                            {
-                                player.DoneTakingCards = true;
-                            }
-
-                            GameIsOver = AssessGameStatus(out gameOverMessage);
-
-                            Console.Clear();
-                            PrintGameState();
-                 
-                        } while (!player.DoneTakingCards || !GameIsOver);
-                    }
-
-                    if (!GameIsOver && this.Dealer.MustTakeCards())
-                    {
-                        this.Dealer.Hand.Add(this.Cards.Dequeue());
-                    }
-
-                    Console.Clear();
+                    this.Dealer.DoneTakingCards = true;
                     PrintGameState();
                 }
-
-            } while (!GameIsOver);
-            
+            }
 
             foreach (var player in this.Players)
             {
@@ -160,32 +170,32 @@ namespace BlackJack
             Dealer.DiscardHand();
         }
 
-        private bool AssessGameStatus(out string message)
+        private bool IsGameOver()
         {
-            message = string.Empty;
+            this.GameResultMessage = string.Empty;
 
             if (this.Dealer.HasBlackJack)
             {
-                message = "Dealer has BlackJack. You Suck!";
+                GameResultMessage = "Dealer has BlackJack. You Suck!";
                 return true;
             }
 
             if (this.Dealer.HasBlackJack)
             {
-                message = "Player has BlackJack. Winner, Winner!";
+                GameResultMessage = "Player has BlackJack. Winner, Winner!";
                 return true;
             }
 
             // HACK: this is for a 1 player game, revisit for multi-player game
             if (this.Players.Any(q => q.CurrentScore > 21))
             {
-                message = "Player Busts! Lame!";
+                GameResultMessage = "Player Busts! Lame!";
                 return true;
             }
 
             if (this.Dealer.CurrentScore > 21)
             {
-                message = "Dealer Busts! Winner, Winner!";
+                GameResultMessage = "Dealer Busts! Winner, Winner!";
                 return true;
             }
 
@@ -195,17 +205,17 @@ namespace BlackJack
                 var player = this.Players.First();
                 if (this.Dealer.CurrentScore == player.CurrentScore)
                 {
-                    message = "PUSH!";
+                    GameResultMessage = "PUSH!";
                 }
                 else
                 {
                     if (this.Dealer.CurrentScore > player.CurrentScore)
                     {
-                        message = "Dealer Wins!";
+                        GameResultMessage = "Dealer Wins!";
                     }
                     else
                     {
-                        message = "Player Wins!";
+                        GameResultMessage = "Player Wins!";
                     }
                 }
                 return true;
