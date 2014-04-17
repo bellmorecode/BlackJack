@@ -24,7 +24,7 @@ namespace BlackJack
                 Console.Write("Play Again? (y)es or (n)o ");
                 playagain = Console.ReadLine();
 
-            } while (playagain == "y");
+            } while (playagain != "n");
 
             Console.WriteLine("Game over!");
             Console.ReadLine();
