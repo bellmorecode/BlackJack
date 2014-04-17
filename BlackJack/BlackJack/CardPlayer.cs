@@ -37,7 +37,7 @@ namespace BlackJack
             }
         }
 
-        public bool DoneTakingCards { get; set; }
+        public bool DoneTakingCards { get; internal set; }
 
         public void DiscardHand()
         {
