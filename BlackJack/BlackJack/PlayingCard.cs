@@ -4,7 +4,6 @@ namespace BlackJack
 {
     public sealed class PlayingCard
     {
-
         static PlayingCard() 
         {
             CardNames[0] = "A";
@@ -45,14 +44,11 @@ namespace BlackJack
             }
         }
 
-
         public enum Suits { Spade, Heart, Club, Diamond }
 
         public int CardValue { get; set; }
 
         public Suits Suit { get; set; }
-
-        
 
         public override string ToString()
         {

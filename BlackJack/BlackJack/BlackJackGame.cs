@@ -12,7 +12,6 @@ namespace BlackJack
         {
             this.Cards = new Queue<PlayingCard>();
             this.Dealer = new CardDealer();
-
             // NOTE: only one player in this game.
             this.Players = new List<CardPlayer> { new CardPlayer() };
         }
@@ -148,7 +147,6 @@ namespace BlackJack
                 }
                 return true;
             }
-
             return false;
         }
 
